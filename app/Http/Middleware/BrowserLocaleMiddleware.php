@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\LocaleHistory;
 
 class BrowserLocaleMiddleware
 {
@@ -37,6 +38,12 @@ class BrowserLocaleMiddleware
                 App::setLocale($locale);
             }
         }
+
+        LocaleHistory::create([
+            'locale' => App::getLocale(),
+            'ip_address' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+        ]);
 
         return $next($request);
     }
